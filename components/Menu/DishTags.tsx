@@ -1,12 +1,14 @@
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faPlus } from '@fortawesome/free-solid-svg-icons';
 import React, { Dispatch, SetStateAction } from 'react';
 import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 
 
-const UserTags = ({ onPress }: { onPress: (id: string) => void }) => {
+const DishTags = ({ onPress }: { onPress: () => void }) => {
     return (
-        <TouchableOpacity onPress={() => onPress('true')}>
+        <TouchableOpacity
+            onPress={onPress}
+        >
             <View style={{
                 borderWidth: 1,
                 borderColor: '#ccc',
@@ -19,14 +21,14 @@ const UserTags = ({ onPress }: { onPress: (id: string) => void }) => {
             }}>
                 <View>
                     <View>
-                        <Text style={{ fontWeight: 'bold', fontSize: 17 }}>Tran Minh Quang</Text>
+                        <Text style={{ fontWeight: 'bold', fontSize: 17 }}>Com ga xao nam</Text>
                     </View>
                     <View>
-                        <Text style={{}}>pokiwarquanden4</Text>
+                        <Text style={{}}>sieu ngon</Text>
                     </View>
                 </View>
                 <View style={{ paddingRight: 10 }}>
-                    <FontAwesomeIcon icon={faPlus} style={{ marginLeft: 10, color: 'green' }}></FontAwesomeIcon>
+                    <FontAwesomeIcon icon={faEdit} style={{ marginLeft: 10, color: 'green' }}></FontAwesomeIcon>
                 </View>
             </View>
         </TouchableOpacity>
@@ -37,4 +39,4 @@ const styles = StyleSheet.create({
 
 })
 
-export default UserTags
+export default DishTags

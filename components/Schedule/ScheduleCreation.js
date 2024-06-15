@@ -1,3 +1,6 @@
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { useRouter } from 'expo-router';
 import React, { useCallback, useState } from 'react';
 import {
     SafeAreaView,
@@ -23,6 +26,7 @@ function ScheduleCreation() {
     const [date, setDate] = useState(new Date());
     const [selectedData, setSelectedData] = useState()
     const [modal, setModal] = useState(false)
+    const router = useRouter()
 
     onDayPress = (date) => {
         setDate(new Date(date.year, date.month - 1, date.day));
@@ -88,6 +92,12 @@ function ScheduleCreation() {
 
     return (
         <>
+            <View style={{ paddingTop: 40, paddingBottom: 20, paddingHorizontal: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                <TouchableOpacity onPress={() => router.back()}>
+                    <FontAwesomeIcon icon={faArrowLeft} size={20} color="red" />
+                </TouchableOpacity>
+                <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Create Schedule</Text>
+            </View>
             <SafeAreaView style={styles.container}>
                 <Agenda
                     items={{

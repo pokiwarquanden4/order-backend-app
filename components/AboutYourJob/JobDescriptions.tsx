@@ -2,15 +2,17 @@ import React, { Dispatch, SetStateAction } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { useRouter } from 'expo-router';
 export const genders = ["Male", 'Female', 'Others']
 
-const JobDescriptions = ({ setPage }: { setPage: Dispatch<SetStateAction<string | undefined>> }) => {
+const JobDescriptions = () => {
+    const router = useRouter()
 
     return (
         <View style={styles.container}>
             <View style={styles.header}>
                 <TouchableOpacity style={styles.backButton} onPress={() => {
-                    setPage(undefined)
+                    router.back()
                 }}>
                     <FontAwesomeIcon icon={faArrowLeft} size={20} color="red" />
                 </TouchableOpacity>
@@ -35,7 +37,8 @@ const JobDescriptions = ({ setPage }: { setPage: Dispatch<SetStateAction<string 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 20,
+        paddingHorizontal: 10,
+        marginTop: 50,
         backgroundColor: '#f5f5f5', // Light background color
     },
     header: {

@@ -1,3 +1,4 @@
+import { Loading } from "@/components/loading/Loading";
 import LoginComponent from "@/components/Login/LoginComponent";
 import { Stack } from "expo-router";
 import { useState } from "react";
@@ -7,16 +8,21 @@ export default function RootLayout() {
   const [login, setLogin] = useState<boolean>(true)
 
   return (
-    login
-      ?
-      <PaperProvider>
-        <Stack screenOptions={{
-          headerShown: false
-        }}>
-          <Stack.Screen name="(tab)" />
-        </Stack>
-      </PaperProvider>
-      :
-      <LoginComponent></LoginComponent>
+    <>
+      <Loading></Loading>
+      {
+        login
+          ?
+          <PaperProvider>
+            <Stack screenOptions={{
+              headerShown: false
+            }}>
+              <Stack.Screen name="(tab)" />
+            </Stack>
+          </PaperProvider>
+          :
+          <LoginComponent></LoginComponent>
+      }
+    </>
   );
 }

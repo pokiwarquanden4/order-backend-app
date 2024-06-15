@@ -1,52 +1,33 @@
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import React, { Dispatch, SetStateAction, useState } from 'react';
+import React, { Dispatch, SetStateAction, useCallback, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import UserTags from './UserTags';
 import MoneyCreation from '../Money/MoneyCreation';
 import { Button } from 'react-native-paper';
 import AboutYourJobCreation from './AboutYourJobCreation';
+import { useRouter } from 'expo-router';
 
-const CreateAboutYourJob = ({ setPage }: { setPage: Dispatch<SetStateAction<string | undefined>> }) => {
-    const [selectedUser, setSelectedUser] = useState<string | undefined>(undefined)
-    const [modal, setModal] = useState(false)
+const CreateAboutYourJob = () => {
+    const router = useRouter()
+
+    const redirectScheduleCreation = useCallback((id: string) => {
+        router.push('/AboutYourJobCreationRoute/' + id)
+    }, [])
 
     return (
         <>
-            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingBottom: 10 }}>
+            <View style={{ marginTop: 50, paddingHorizontal: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingBottom: 10 }}>
                 <TouchableOpacity onPress={() => {
-                    if (!selectedUser) {
-                        setPage(undefined)
-                    } else {
-                        setSelectedUser(undefined)
-                    }
+                    router.back()
                 }}>
                     <FontAwesomeIcon icon={faArrowLeft} size={20} color="red" />
                 </TouchableOpacity>
                 <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Create Job Description</Text>
             </View>
-            {
-                !selectedUser
-                    ?
-                    <ScrollView style={{ height: 480 }}>
-                        <UserTags setSelectedUser={setSelectedUser}></UserTags>
-                        <UserTags setSelectedUser={setSelectedUser}></UserTags>
-                        <UserTags setSelectedUser={setSelectedUser}></UserTags>
-                        <UserTags setSelectedUser={setSelectedUser}></UserTags>
-                        <UserTags setSelectedUser={setSelectedUser}></UserTags>
-                        <UserTags setSelectedUser={setSelectedUser}></UserTags>
-                        <UserTags setSelectedUser={setSelectedUser}></UserTags>
-                        <UserTags setSelectedUser={setSelectedUser}></UserTags>
-                        <UserTags setSelectedUser={setSelectedUser}></UserTags>
-                        <UserTags setSelectedUser={setSelectedUser}></UserTags>
-                        <UserTags setSelectedUser={setSelectedUser}></UserTags>
-                        <UserTags setSelectedUser={setSelectedUser}></UserTags>
-                    </ScrollView>
-                    :
-                    <View>
-                        <AboutYourJobCreation modal={modal} setModal={setModal}></AboutYourJobCreation>
-                    </View>
-            }
+            <ScrollView>
+                <UserTags onPress={redirectScheduleCreation}></UserTags>
+            </ScrollView>
         </>
     );
 };

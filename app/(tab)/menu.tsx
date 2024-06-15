@@ -15,7 +15,7 @@ export default function menu() {
             <View style={{ paddingBottom: 10 }}>
                 <Button
                     onPress={() => {
-                        router.navigate('/menuRoute/index')
+                        router.navigate('/menuRoute/menuRoute')
                     }}
                     contentStyle={styles.button} icon="human" mode="outlined">
                     Your Profile
@@ -24,7 +24,7 @@ export default function menu() {
             <View style={{ paddingBottom: 10 }}>
                 <Button
                     onPress={() => {
-                        router.navigate('/ScheduleRoute/index')
+                        router.navigate('/ScheduleRoute/ScheduleRoute')
                     }}
                     contentStyle={styles.button} icon="clock" mode="outlined" >
                     Timekeeping
@@ -33,7 +33,7 @@ export default function menu() {
             <View style={{ paddingBottom: 10 }}>
                 <Button
                     onPress={() => {
-                        router.navigate('/MoneyRoute/index')
+                        router.navigate('/MoneyRoute/MoneyRoute')
                     }}
                     contentStyle={styles.button} icon="cash" mode="outlined">
                     Money
@@ -43,7 +43,7 @@ export default function menu() {
 
                 <Button
                     onPress={() => {
-                        router.navigate('/AboutYourJobRoute/index')
+                        router.navigate('/AboutYourJobRoute/AboutYourJobRoute')
                     }}
                     contentStyle={styles.button} icon="table" mode="outlined">
                     About Your Jobs
@@ -53,7 +53,7 @@ export default function menu() {
 
                 <Button
                     onPress={() => {
-                        router.navigate('/CreateAccountRoute/index')
+                        router.navigate('/CreateAccountRoute/CreateAccountRoute')
                     }}
                     contentStyle={styles.button} icon="table" mode="outlined" >
                     Create new account
@@ -63,7 +63,7 @@ export default function menu() {
 
                 <Button
                     onPress={() => {
-                        router.navigate('/CreateScheduleRoute/index')
+                        router.navigate('/CreateScheduleRoute/CreateScheduleRoute')
                     }}
                     contentStyle={styles.button} icon="table" mode="outlined" >
                     Create new schedule
@@ -73,7 +73,7 @@ export default function menu() {
 
                 <Button
                     onPress={() => {
-                        router.navigate('/CreateMoneyRoute/index')
+                        router.navigate('/CreateMoneyRoute/CreateMoneyRoute')
                     }}
                     contentStyle={styles.button} icon="table" mode="outlined" >
                     Create money
@@ -83,7 +83,7 @@ export default function menu() {
 
                 <Button
                     onPress={() => {
-                        router.navigate('/CreateAboutYourJobRoute/index')
+                        router.navigate('/CreateJobDesRoute/CreateJobDesRoute')
                     }}
                     contentStyle={styles.button} icon="table" mode="outlined" >
                     Create Job Description
@@ -93,7 +93,7 @@ export default function menu() {
 
                 <Button
                     onPress={() => {
-                        router.navigate('/CreateMenu/index')
+                        router.navigate('/CreateMenuRoute/CreateMenuRoute')
                     }}
                     contentStyle={styles.button} icon="table" mode="outlined">
                     Create Menu
