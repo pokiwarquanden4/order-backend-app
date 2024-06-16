@@ -18,31 +18,31 @@ export default function CreateDish() {
     const [uploadImgModal, setUploadImgModal] = useState(false)
     const [ingredientList, setIngredientList] = useState<IIngredient[]>([
         {
-            id: '1',
+            _id: '1',
             name: 'Tomato',
             type: true,
             number: 5,
         },
         {
-            id: '2',
+            _id: '2',
             name: 'Chicken Breast',
             type: false,
             number: 2,
         },
         {
-            id: '3',
+            _id: '3',
             name: 'Olive Oil',
             type: false,
             number: 1,
         },
         {
-            id: '4',
+            _id: '4',
             name: 'Basil',
             type: true,
             number: 10,
         },
         {
-            id: '5',
+            _id: '5',
             name: 'Garlic',
             type: true,
             number: 3,
@@ -113,13 +113,14 @@ export default function CreateDish() {
     useEffect(() => {
         const async = async () => {
             const data = await getDishes(CreateDishRoute as string)
-            data && setDishList(data.data.menus.dishes)
+            data && setDishList(data.data.dishes)
         }
 
         async()
     }, [])
 
-    const onClickDish = useCallback(() => {
+    const onOpenDishModal = useCallback((dish: IDish) => {
+        setDishData(dish)
         setModalDish(true)
     }, [])
 
@@ -131,10 +132,23 @@ export default function CreateDish() {
                 }}>
                     <FontAwesomeIcon icon={faArrowLeft} size={20} color="red" />
                 </TouchableOpacity>
-                <Button icon='plus' mode='outlined' onPress={() => setModalDish(true)}>Add Dish</Button>
+                <Button icon='plus' mode='outlined' onPress={() =>
+                    onOpenDishModal({
+                        id: '',
+                        name: '',
+                        menu: '',
+                        imgUrl: '',
+                        ingredient: [],
+                        ingredientConsumer: [],
+                        recommend: false,
+                        description: '',
+                        price: 0,
+                    })}>Add Dish</Button>
             </View>
             <ScrollView>
-                <DishTags onClickDish={onClickDish}></DishTags>
+                {dishList.map((dish) => {
+                    return <DishTags data={dish} onClickDish={onOpenDishModal}></DishTags>
+                })}
             </ScrollView>
 
             <Portal>
