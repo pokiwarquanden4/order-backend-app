@@ -3,35 +3,70 @@ import { jwtDecode } from "jwt-decode";
 import { trackPromise } from "react-promise-tracker";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export const handleAxiosRequest = async (config: InternalAxiosRequestConfig) => {
+interface TokenData {
+    token: string;
+    Expiry: string;
+}
+
+const isTokenExpired = (expiry: string): boolean => {
+    const expiryDate = new Date(expiry);
+    const currentDate = new Date();
+    return currentDate >= expiryDate;
+};
+
+export const deleteTokens = async () => {
     try {
-        const token = await AsyncStorage.getItem('token') || await AsyncStorage.getItem('refresh_token');
-        if (token) {
-            config.headers['Authorization'] = "Bearer " + token;
-        }
+        await AsyncStorage.multiRemove(['token', 'refresh_token']);
+        console.log('Tokens deleted successfully');
     } catch (error) {
-        console.error('Error retrieving token from AsyncStorage', error);
+        console.error('Error deleting tokens:', error);
     }
-    return config;
+};
+
+export const getToken = async () => {
+    const tokenData = await AsyncStorage.getItem('token');
+    const refreshTokenData = await AsyncStorage.getItem('refresh_token');
+
+    if (tokenData) {
+        const { token, Expiry }: TokenData = JSON.parse(tokenData);
+        if (!isTokenExpired(Expiry)) {
+            return token;
+        } else if (refreshTokenData) {
+            const { token: refreshToken, Expiry: refreshExpiry }: TokenData = JSON.parse(refreshTokenData);
+            if (!isTokenExpired(refreshExpiry)) {
+                return refreshToken;
+            }
+        }
+    }
 }
 
 export const handleAxiosResponse = async (response: any) => {
     if (response.data.accessToken && response.status === 200) {
         try {
-            await AsyncStorage.setItem('token', response.data.accessToken);
             const decodedAccessToken: any = jwtDecode(response.data.accessToken);
             const accessTokenExpiry = new Date(Number(decodedAccessToken.exp) * 1000).toISOString();
-            await AsyncStorage.setItem('token_expiry', accessTokenExpiry);
+
+            const data = {
+                token: response.data.accessToken,
+                Expiry: accessTokenExpiry
+            }
+
+            await AsyncStorage.setItem('token', JSON.stringify(data));
         } catch (error) {
             console.error('Error saving access token to AsyncStorage', error);
         }
     }
     if (response.data.refreshToken && response.status === 200) {
         try {
-            await AsyncStorage.setItem('refresh_token', response.data.refreshToken);
-            const decodedRefreshToken: any = jwtDecode(response.data.refreshToken);
-            const refreshTokenExpiry = new Date(Number(decodedRefreshToken.exp) * 1000).toISOString();
-            await AsyncStorage.setItem('refresh_token_expiry', refreshTokenExpiry);
+            const decodedAccessToken: any = jwtDecode(response.data.refreshToken);
+            const accessTokenExpiry = new Date(Number(decodedAccessToken.exp) * 1000).toISOString();
+
+            const data = {
+                token: response.data.refreshToken,
+                Expiry: accessTokenExpiry
+            }
+
+            await AsyncStorage.setItem('refresh_token', JSON.stringify(data));
         } catch (error) {
             console.error('Error saving refresh token to AsyncStorage', error);
         }
@@ -40,11 +75,18 @@ export const handleAxiosResponse = async (response: any) => {
 }
 
 export const sendRequest = async (url: string, { payload, method }: { payload?: any, method: string }, loading: boolean = true) => {
+    const token = await getToken()
+
     const request = axios({
         method,
         url,
         data: payload,
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
     }).then((results) => {
+        handleAxiosResponse(results)
+
         return {
             status: results.status,
             data: results.data

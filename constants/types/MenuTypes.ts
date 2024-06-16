@@ -1,5 +1,5 @@
 export interface IIngredient {
-    id?: string
+    _id?: string
     name: string,
     type: boolean,
     number: number,
@@ -18,6 +18,6 @@ export interface IDish {
 }
 
 export interface IMenu {
-    id?: string
+    _id?: string
     name: string,
 }

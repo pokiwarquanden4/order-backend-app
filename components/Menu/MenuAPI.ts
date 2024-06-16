@@ -16,9 +16,43 @@ export interface ICreateAccount {
 
 
 export const createMenu = async (menu: IMenu) => {
-    const res = await sendRequest(`dish/create/menu`, {
+    const res = await sendRequest(`dish/createMenu`, {
         payload: menu,
         method: "POST"
+    })
+    return res
+}
+
+export const getMenu = async () => {
+    const res = await sendRequest(`dish/getMenu`, {
+        payload: {},
+        method: "GET"
+    })
+    return res
+}
+
+export const editMenu = async (menu: IMenu) => {
+    const res = await sendRequest(`dish/editMenu`, {
+        payload: menu,
+        method: "POST"
+    })
+    return res
+}
+
+export const deleteMenu = async (_id: string) => {
+    const res = await sendRequest(`dish/deleteMenu`, {
+        payload: {
+            _id: _id
+        },
+        method: "POST"
+    })
+    return res
+}
+
+export const getDishes = async (_id: string) => {
+    const res = await sendRequest(`dish/getDish?_id=${_id}`, {
+        payload: {},
+        method: "GET"
     })
     return res
 }

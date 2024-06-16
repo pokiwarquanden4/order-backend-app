@@ -1,6 +1,6 @@
 import { View, Text, TouchableOpacity, ScrollView } from 'react-native'
-import React, { useState } from 'react'
-import { useRouter } from 'expo-router'
+import React, { useCallback, useEffect, useState } from 'react'
+import { useLocalSearchParams, useRouter } from 'expo-router'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faArrowLeft, faCamera, faEdit, faImage } from '@fortawesome/free-solid-svg-icons'
 import { Avatar, Button, Checkbox, Modal, Portal, TextInput } from 'react-native-paper'
@@ -8,9 +8,12 @@ import DishTags from './DishTags'
 import { IDish, IIngredient } from '@/constants/types/MenuTypes'
 import * as ImagePicker from 'expo-image-picker'
 import DropDownIngre from './DropDownIngre'
+import { getDishes } from './MenuAPI'
 
 export default function CreateDish() {
     const router = useRouter()
+    const { CreateDishRoute } = useLocalSearchParams()
+    const [dishList, setDishList] = useState<IDish[]>([])
     const [modalDish, setModalDish] = useState(false)
     const [uploadImgModal, setUploadImgModal] = useState(false)
     const [ingredientList, setIngredientList] = useState<IIngredient[]>([
@@ -107,6 +110,19 @@ export default function CreateDish() {
         }
     }
 
+    useEffect(() => {
+        const async = async () => {
+            const data = await getDishes(CreateDishRoute as string)
+            data && setDishList(data.data.menus.dishes)
+        }
+
+        async()
+    }, [])
+
+    const onClickDish = useCallback(() => {
+        setModalDish(true)
+    }, [])
+
     return (
         <>
             <View style={{ paddingTop: 50, paddingHorizontal: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingBottom: 10 }}>
@@ -118,7 +134,7 @@ export default function CreateDish() {
                 <Button icon='plus' mode='outlined' onPress={() => setModalDish(true)}>Add Dish</Button>
             </View>
             <ScrollView>
-                <DishTags onPress={() => setModalDish(true)}></DishTags>
+                <DishTags onClickDish={onClickDish}></DishTags>
             </ScrollView>
 
             <Portal>

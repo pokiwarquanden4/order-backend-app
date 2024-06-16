@@ -2,9 +2,13 @@ import { View, Text, StyleSheet } from 'react-native'
 import React from 'react'
 import { Button } from 'react-native-paper';
 import { useRouter } from 'expo-router';
+import { deleteTokens } from '@/config/axiosConfig';
+import { useAppSelector } from '@/config/hook';
+import role from '@/config/roles';
 
 export default function menu() {
     const router = useRouter()
+    const userRole = useAppSelector(store => store.user.role)
 
     return (
         <View style={{ paddingLeft: 15, paddingRight: 15 }}>
@@ -15,93 +19,104 @@ export default function menu() {
             <View style={{ paddingBottom: 10 }}>
                 <Button
                     onPress={() => {
-                        router.navigate('/menuRoute/menuRoute')
+                        router.navigate('/profileRoute/profileRoute')
                     }}
                     contentStyle={styles.button} icon="human" mode="outlined">
                     Your Profile
                 </Button>
             </View>
-            <View style={{ paddingBottom: 10 }}>
-                <Button
-                    onPress={() => {
-                        router.navigate('/ScheduleRoute/ScheduleRoute')
-                    }}
-                    contentStyle={styles.button} icon="clock" mode="outlined" >
-                    Timekeeping
-                </Button>
-            </View>
-            <View style={{ paddingBottom: 10 }}>
-                <Button
-                    onPress={() => {
-                        router.navigate('/MoneyRoute/MoneyRoute')
-                    }}
-                    contentStyle={styles.button} icon="cash" mode="outlined">
-                    Money
-                </Button>
-            </View>
-            <View style={{ paddingBottom: 10 }}>
+            {
+                role.admin !== userRole
+                    ?
+                    <>
+                        <View style={{ paddingBottom: 10 }}>
+                            <Button
+                                onPress={() => {
+                                    router.navigate('/ScheduleRoute/ScheduleRoute')
+                                }}
+                                contentStyle={styles.button} icon="clock" mode="outlined" >
+                                Timekeeping
+                            </Button>
+                        </View>
+                        <View style={{ paddingBottom: 10 }}>
+                            <Button
+                                onPress={() => {
+                                    router.navigate('/MoneyRoute/MoneyRoute')
+                                }}
+                                contentStyle={styles.button} icon="cash" mode="outlined">
+                                Money
+                            </Button>
+                        </View>
+                        <View style={{ paddingBottom: 10 }}>
 
-                <Button
-                    onPress={() => {
-                        router.navigate('/AboutYourJobRoute/AboutYourJobRoute')
-                    }}
-                    contentStyle={styles.button} icon="table" mode="outlined">
-                    About Your Jobs
-                </Button>
-            </View>
-            <View style={{ paddingBottom: 10 }}>
+                            <Button
+                                onPress={() => {
+                                    router.navigate('/AboutYourJobRoute/AboutYourJobRoute')
+                                }}
+                                contentStyle={styles.button} icon="table" mode="outlined">
+                                About Your Jobs
+                            </Button>
+                        </View>
+                    </>
+                    :
+                    <>
+                        <View style={{ paddingBottom: 10 }}>
 
-                <Button
-                    onPress={() => {
-                        router.navigate('/CreateAccountRoute/CreateAccountRoute')
-                    }}
-                    contentStyle={styles.button} icon="table" mode="outlined" >
-                    Create new account
-                </Button>
-            </View>
-            <View style={{ paddingBottom: 10 }}>
+                            <Button
+                                onPress={() => {
+                                    router.navigate('/CreateAccountRoute/CreateAccountRoute')
+                                }}
+                                contentStyle={styles.button} icon="table" mode="outlined" >
+                                Create new account
+                            </Button>
+                        </View>
+                        <View style={{ paddingBottom: 10 }}>
 
-                <Button
-                    onPress={() => {
-                        router.navigate('/CreateScheduleRoute/CreateScheduleRoute')
-                    }}
-                    contentStyle={styles.button} icon="table" mode="outlined" >
-                    Create new schedule
-                </Button>
-            </View>
-            <View style={{ paddingBottom: 10 }}>
+                            <Button
+                                onPress={() => {
+                                    router.navigate('/CreateScheduleRoute/CreateScheduleRoute')
+                                }}
+                                contentStyle={styles.button} icon="table" mode="outlined" >
+                                Create new schedule
+                            </Button>
+                        </View>
+                        <View style={{ paddingBottom: 10 }}>
 
-                <Button
-                    onPress={() => {
-                        router.navigate('/CreateMoneyRoute/CreateMoneyRoute')
-                    }}
-                    contentStyle={styles.button} icon="table" mode="outlined" >
-                    Create money
-                </Button>
-            </View>
-            <View style={{ paddingBottom: 10 }}>
+                            <Button
+                                onPress={() => {
+                                    router.navigate('/CreateMoneyRoute/CreateMoneyRoute')
+                                }}
+                                contentStyle={styles.button} icon="table" mode="outlined" >
+                                Create money
+                            </Button>
+                        </View>
+                        <View style={{ paddingBottom: 10 }}>
 
-                <Button
-                    onPress={() => {
-                        router.navigate('/CreateJobDesRoute/CreateJobDesRoute')
-                    }}
-                    contentStyle={styles.button} icon="table" mode="outlined" >
-                    Create Job Description
-                </Button>
-            </View>
-            <View style={{ paddingBottom: 10 }}>
+                            <Button
+                                onPress={() => {
+                                    router.navigate('/CreateJobDesRoute/CreateJobDesRoute')
+                                }}
+                                contentStyle={styles.button} icon="table" mode="outlined" >
+                                Create Job Description
+                            </Button>
+                        </View>
+                        <View style={{ paddingBottom: 10 }}>
 
-                <Button
-                    onPress={() => {
-                        router.navigate('/CreateMenuRoute/CreateMenuRoute')
-                    }}
-                    contentStyle={styles.button} icon="table" mode="outlined">
-                    Create Menu
-                </Button>
-            </View>
-            <View style={{ paddingBottom: 10 }}>
+                            <Button
+                                onPress={() => {
+                                    router.navigate('/CreateMenuRoute/CreateMenuRoute')
+                                }}
+                                contentStyle={styles.button} icon="table" mode="outlined">
+                                Create Menu
+                            </Button>
+                        </View>
+                    </>
 
-                <Button contentStyle={styles.button} icon="exit-to-app" mode="outlined">
+            }
+            <View style={{ paddingBottom: 10 }}>
+                <Button
+                    onPress={deleteTokens}
+                    contentStyle={styles.button} icon="exit-to-app" mode="outlined">
                     Log out
                 </Button>
             </View>

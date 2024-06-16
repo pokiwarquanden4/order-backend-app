@@ -1,17 +1,83 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Button, TextInput } from 'react-native-paper';
+import { login } from './LoginAPI';
+import { useAppDispatch } from '@/config/hook';
+import { setUser } from '@/reducer/userSlice';
+
+interface ILoginError {
+    username: boolean,
+    password: boolean,
+}
 
 const LoginComponent = () => {
+    const dispatch = useAppDispatch()
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [error, setError] = useState<ILoginError>({
+        username: false,
+        password: false
+    })
 
-    const handleLogin = () => {
-        // Replace this with your actual login logic
-        console.log('Username:', username);
-        console.log('Password:', password);
-        // Handle successful or failed login (e.g., navigate to a different screen)
-    };
+    const handleLogin = useCallback(async () => {
+        const newError: ILoginError = {
+            username: false,
+            password: false
+        }
+        if (!username) {
+            newError.username = true
+        }
+        if (!password) {
+            newError.password = true
+        }
+
+        if (!newError.username && !newError.password) {
+            const data = await login({
+                account: username,
+                password: password,
+            })
+            if (data) {
+                if (data.status === 200 && data.data.message === 'User not found') {
+                    newError.username = true
+                }
+                if (data.status === 200 && data.data.message === 'Invalid password') {
+                    newError.password = true
+                }
+                if (data.status === 200 && data.data.message === 'Login successful') {
+                    dispatch(setUser(data.data.user))
+                }
+            }
+        }
+
+        setError(newError)
+    }, [username, password]);
+
+    const onChangeData = useCallback((key: string, value: string) => {
+        switch (key) {
+            case 'username':
+                setError((preError) => {
+                    const newError = {
+                        ...preError,
+                        username: false
+                    }
+
+                    return newError
+                })
+                setUsername(value)
+                break
+            case 'password':
+                setError((preError) => {
+                    const newError = {
+                        ...preError,
+                        password: false
+                    }
+
+                    return newError
+                })
+                setPassword(value)
+                break
+        }
+    }, [])
 
     return (
         <View style={styles.container}>
@@ -20,18 +86,32 @@ const LoginComponent = () => {
                 <TextInput
                     style={styles.input}
                     value={username}
-                    onChangeText={setUsername}
+                    onChangeText={(text) => onChangeData('username', text)}
                     placeholder="Username"
                     autoCapitalize="none" // Prevent automatic capitalization
                     textContentType="username" // Set keyboard type for username
                 />
+                {
+                    error.username
+                        ?
+                        <Text style={{ color: 'red', fontSize: 12, paddingBottom: 13, marginLeft: 6 }}>User name do not valid</Text>
+                        :
+                        undefined
+                }
                 <TextInput
                     style={styles.input}
                     value={password}
-                    onChangeText={setPassword}
+                    onChangeText={(text) => onChangeData('password', text)}
                     placeholder="Password"
                     secureTextEntry={true} // Hide password characters
                 />
+                {
+                    error.password
+                        ?
+                        <Text style={{ color: 'red', fontSize: 12, paddingBottom: 13, marginLeft: 6 }}>Password do not valid</Text>
+                        :
+                        undefined
+                }
                 <Button mode='contained' onPress={handleLogin}>
                     Login
                 </Button>

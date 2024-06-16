@@ -7,16 +7,13 @@ import MenuTags from './MenuTags';
 import DishTags from './DishTags';
 import { IDish, IMenu } from '@/constants/types/MenuTypes';
 import { useRouter } from 'expo-router';
-import { createMenu } from './MenuAPI';
-import axios from 'axios';
+import { createMenu, deleteMenu, editMenu, getMenu } from './MenuAPI';
 
 const CreateMenu = () => {
     const router = useRouter()
-    const [selectedMenu, setSelectedMenu] = useState<IMenu | undefined>(undefined)
 
     //List
     const [menuList, setMenuList] = useState<IMenu[]>([])
-    const [dishList, setDishList] = useState<IDish[]>([])
 
     //Data
     const [menuData, setMenuData] = useState<IMenu>({
@@ -25,23 +22,58 @@ const CreateMenu = () => {
 
     const [modalMenu, setModalMenu] = useState(false)
 
-    useEffect(() => {
-        axios.get('/').then((r) => {
-            console.log(r)
+    const onMenuData = useCallback(async (menu: IMenu) => {
+        if (!menu._id) {
+            const data = await createMenu(menu)
+            if (data) {
+                setMenuList([...menuList, { ...data.data.menu }])
+            }
+        } else {
+            const data = await editMenu(menu)
+            if (data) {
+                const newMenu = data.data.menu as IMenu
+                const newMenuList = [...menuList]
+
+                newMenuList.forEach(menu => {
+                    if (menu._id === newMenu._id) {
+                        menu.name = newMenu.name
+                    }
+                })
+
+                setMenuList(newMenuList)
+            }
+        }
+
+        setModalMenu(false)
+        setMenuData({
+            name: ''
         })
+    }, [menuList])
+
+    const onOpenEdit = useCallback((menu: IMenu) => {
+        setMenuData({
+            name: ''
+        })
+        setModalMenu(true)
     }, [])
 
-    const onMenuData = useCallback(async (menu: IMenu) => {
-        if (!menu.id) {
-            const data = await createMenu(menu)
+    const onDeleteMenu = useCallback(async (_id: string) => {
+        const data = await deleteMenu(_id)
 
-            console.log(data)
+        if (data && data.status === 200) {
+            const newData = menuList.filter(menu => menu._id !== _id)
 
-            setModalMenu(false)
-            setMenuData({
-                name: ''
-            })
+            setMenuList(newData)
         }
+    }, [menuList])
+
+    useEffect(() => {
+        const sync = async () => {
+            const data = await getMenu()
+
+            if (data) setMenuList(data.data.menu)
+        }
+        sync()
     }, [])
 
     const redirectDishCreation = useCallback((id: string) => {
@@ -56,10 +88,18 @@ const CreateMenu = () => {
                 }}>
                     <FontAwesomeIcon icon={faArrowLeft} size={20} color="red" />
                 </TouchableOpacity>
-                <Button icon='plus' mode='outlined' onPress={() => setModalMenu(true)}>Add Menu</Button>
+                <Button icon='plus' mode='outlined' onPress={() => {
+                    onOpenEdit({
+                        name: ''
+                    })
+                }}>Add Menu</Button>
             </View>
-            <ScrollView style={{ height: 480 }}>
-                <MenuTags setModalMenu={setModalMenu} setMenuData={setMenuData} selectedMenu={selectedMenu} onPress={redirectDishCreation}></MenuTags>
+            <ScrollView>
+                {
+                    menuList.map((menu) => {
+                        return <MenuTags key={menu._id} onDeleteMenu={onDeleteMenu} onOpenEdit={onOpenEdit} data={menu} onPress={redirectDishCreation}></MenuTags>
+                    })
+                }
             </ScrollView>
             <Portal>
                 <Modal visible={modalMenu} onDismiss={() => setModalMenu(false)} contentContainerStyle={{ backgroundColor: 'white', padding: 20 }}>
@@ -78,9 +118,10 @@ const CreateMenu = () => {
                         })}
                     />
 
-                    <Button mode='contained' onPress={() => {
-                        onMenuData(menuData)
-                    }}>
+                    <Button mode='contained'
+                        onPress={() => {
+                            onMenuData(menuData)
+                        }}>
                         Finish
                     </Button>
                 </Modal>

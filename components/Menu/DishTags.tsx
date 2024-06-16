@@ -4,10 +4,10 @@ import React, { Dispatch, SetStateAction } from 'react';
 import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 
 
-const DishTags = ({ onPress }: { onPress: () => void }) => {
+const DishTags = ({ onClickDish }: { onClickDish: () => void }) => {
     return (
         <TouchableOpacity
-            onPress={onPress}
+            onPress={onClickDish}
         >
             <View style={{
                 borderWidth: 1,

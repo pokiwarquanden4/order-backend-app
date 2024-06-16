@@ -2,14 +2,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faEdit, faPlus, faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import React, { Dispatch, SetStateAction } from 'react';
 import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
-import { IMenu } from '@/constants/types/MenuTypes';
+import { IIngredient } from '@/constants/types/MenuTypes';
 
 
-const MenuTags = ({ onPress, data, onOpenEdit, onDeleteMenu }: { onDeleteMenu: (_id: string) => void, onOpenEdit: (data: IMenu) => void, data: IMenu, onPress: (id: string) => void }) => {
+const IngreTags = ({ data, onOpenEdit, onDelete }: { onDelete: (_id: string) => void, onOpenEdit: (data: IIngredient) => void, data: IIngredient }) => {
     return (
-        <TouchableOpacity
-            onPress={() => onPress(data._id || '')}
-        >
+        <TouchableOpacity>
             <View style={{
                 borderWidth: 1,
                 borderColor: '#ccc',
@@ -29,15 +27,15 @@ const MenuTags = ({ onPress, data, onOpenEdit, onDeleteMenu }: { onDeleteMenu: (
                     flexDirection: 'row'
                 }}>
                     <TouchableOpacity
-                        onPress={() => onPress(data._id || '')}
                         style={{ paddingRight: 10 }}>
                         <FontAwesomeIcon icon={faPlus} style={{ color: 'green' }}></FontAwesomeIcon>
                     </TouchableOpacity>
                     <TouchableOpacity
                         onPress={() => {
                             onOpenEdit({
-                                _id: data._id,
                                 name: data.name,
+                                type: data.type,
+                                number: data.number,
                             })
                         }}
                         style={{ paddingRight: 10 }}>
@@ -45,7 +43,7 @@ const MenuTags = ({ onPress, data, onOpenEdit, onDeleteMenu }: { onDeleteMenu: (
                     </TouchableOpacity>
                     <TouchableOpacity
                         onPress={() => {
-                            onDeleteMenu(data._id || '')
+                            onDelete(data._id || '')
                         }}
                         style={{ paddingRight: 10 }}>
                         <FontAwesomeIcon icon={faTrashCan} style={{ marginLeft: 10, color: 'red' }}></FontAwesomeIcon>
@@ -60,4 +58,4 @@ const styles = StyleSheet.create({
 
 })
 
-export default MenuTags
+export default IngreTags
